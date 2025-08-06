@@ -3,7 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	//"github.com/anshahkhan/Parser/sysmon"
+
+	"github.com/anshahkhan/Parser/sysmon"
 )
 
 // ParsedLog defines the unified output structure
@@ -25,10 +26,31 @@ type parserFunc func(map[string]interface{}) (ParsedLog, error)
 // registry maps log sources to event-specific parser functions
 var registry = map[string]map[int]parserFunc{
 	"sysmon": {
-		//	1: sysmon.ParseEvent1,
-		//	3: sysmon.ParseEvent3,
-		// Add more as needed
+		1: wrapSysmonParser(sysmon.ParseEvent1),
+		// other sysmon event parsers here...
 	},
+}
+
+// wrapSysmonParser adapts a sysmon parser to match parserFunc type
+func wrapSysmonParser(f func(map[string]interface{}) (map[string]interface{}, error)) parserFunc {
+	return func(log map[string]interface{}) (ParsedLog, error) {
+		parsedMap, err := f(log)
+		if err != nil {
+			return ParsedLog{}, err
+		}
+
+		return ParsedLog{
+			EventID:   toInt(parsedMap["event_id"]),
+			EventName: toString(parsedMap["event_name"]),
+			Source:    toString(parsedMap["source"]),
+			Timestamp: toString(parsedMap["timestamp"]),
+			Fields:    toMap(parsedMap["fields"]),
+			Agent:     toMapString(parsedMap["agent"]),
+			Tags:      toStringSlice(parsedMap["tags"]),
+			ParsedBy:  toString(parsedMap["parsed_by"]),
+			Status:    toString(parsedMap["status"]),
+		}, nil
+	}
 }
 
 // RouteLog routes an incoming log to the appropriate parser
@@ -56,7 +78,46 @@ func RouteLog(log map[string]interface{}) (ParsedLog, error) {
 	return parserFunc(log)
 }
 
-// detectSource attempts to determine the log source (sysmon, windows, etc.)
+// Helpers for type conversions
+func toString(val interface{}) string {
+	if str, ok := val.(string); ok {
+		return str
+	}
+	return ""
+}
+
+func toInt(val interface{}) int {
+	if f, ok := val.(float64); ok {
+		return int(f)
+	}
+	if i, ok := val.(int); ok {
+		return i
+	}
+	return 0
+}
+
+func toMap(val interface{}) map[string]interface{} {
+	if m, ok := val.(map[string]interface{}); ok {
+		return m
+	}
+	return map[string]interface{}{}
+}
+
+func toMapString(val interface{}) map[string]string {
+	if m, ok := val.(map[string]string); ok {
+		return m
+	}
+	return map[string]string{}
+}
+
+func toStringSlice(val interface{}) []string {
+	if s, ok := val.([]string); ok {
+		return s
+	}
+	return []string{}
+}
+
+// detectSource determines log source (sysmon/windows)
 func detectSource(log map[string]interface{}) (string, error) {
 	if _, ok := log["winlog"]; ok {
 		return "sysmon", nil
@@ -67,7 +128,7 @@ func detectSource(log map[string]interface{}) (string, error) {
 	return "", errors.New("unable to detect log source")
 }
 
-// extractEventID pulls out the event ID from the log
+// extractEventID extracts event_id based on source
 func extractEventID(log map[string]interface{}, source string) (int, error) {
 	switch source {
 	case "sysmon":
@@ -79,7 +140,7 @@ func extractEventID(log map[string]interface{}, source string) (int, error) {
 		if !ok {
 			return 0, errors.New("missing system block in winlog")
 		}
-		eid, ok := system["event_id"].(float64) // JSON numbers come in as float64
+		eid, ok := system["event_id"].(float64)
 		if !ok {
 			return 0, errors.New("event_id not found or invalid")
 		}
