@@ -27,6 +27,8 @@ type parserFunc func(map[string]interface{}) (ParsedLog, error)
 var registry = map[string]map[int]parserFunc{
 	"sysmon": {
 		1: wrapSysmonParser(sysmon.ParseEvent1),
+		2: wrapSysmonParser(sysmon.ParseEvent2),
+		3: wrapSysmonParser(sysmon.ParseEvent3),
 		// other sysmon event parsers here...
 	},
 }

@@ -10,7 +10,7 @@ func main() {
 	fmt.Println("ShahDec Parsing Engine initialized 🚀")
 
 	// Load sample log file
-	file, err := os.ReadFile("sample_event1.json")
+	file, err := os.ReadFile("sample_event3.json")
 	if err != nil {
 		fmt.Println("Failed to read log file:", err)
 		return

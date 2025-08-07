@@ -1,0 +1,16 @@
+{
+  "winlog": {
+    "system": {
+      "event_id": 2,
+      "time_created": "2025-08-07T14:30:00Z"
+    },
+    "event_data": {
+      "Xml": "<Event><System><EventID>2</EventID><Computer>DESKTOP-XYZ</Computer><TimeCreated SystemTime=\"2025-08-07T14:30:00.123Z\"/></System><EventData><Data Name=\"TargetFilename\">C:\\Users\\Shahjee\\Documents\\secret.txt</Data><Data Name=\"CreationUtcTime\">2025-08-07T14:29:00.000Z</Data><Data Name=\"PreviousCreationUtcTime\">2025-08-07T14:00:00.000Z</Data></EventData></Event>"
+    }
+  },
+  "agent": {
+    "id": "agent-456",
+    "hostname": "DESKTOP-XYZ",
+    "ephemeral_id": "zzz-789"
+  }
+}

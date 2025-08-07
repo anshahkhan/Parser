@@ -1,0 +1,32 @@
+{
+  "winlog": {
+    "system": {
+      "event_id": 3,
+      "time_created": "2025-08-07T15:15:00Z"
+    },
+    "event_data": {
+      "Xml": "<Event><System><EventID>3</EventID><Computer>DESKTOP-NET</Computer><TimeCreated SystemTime=\"2025-08-07T15:15:00.456Z\"/></System><EventData>"
+        ,"<Data Name=\"UtcTime\">2025-08-07T15:15:00.000Z</Data>"
+        : "<Data Name=\"ProcessGuid\">{1234-5678-9ABC-DEF0}</Data>"
+        , "<Data Name=\"ProcessId\">5678</Data>"
+        : "<Data Name=\"Image\">C:\\Windows\\System32\\chrome.exe</Data>"
+        , "<Data Name=\"User\">DESKTOP-NET\\Shahjee</Data>"
+        : "<Data Name=\"Protocol\">tcp</Data>"
+        , "<Data Name=\"Initiated\">true</Data>"
+        : "<Data Name=\"SourceIsIpv6\">false</Data>"
+        , "<Data Name=\"SourceIp\">192.168.1.100</Data>"
+        : "<Data Name=\"SourceHostname\">DESKTOP-NET</Data>"
+        , "<Data Name=\"SourcePort\">54321</Data>"
+        : "<Data Name=\"DestinationIsIpv6\">false</Data>"
+        , "<Data Name=\"DestinationIp\">93.184.216.34</Data>"
+        : "<Data Name=\"DestinationHostname\">example.com</Data>"
+        , "<Data Name=\"DestinationPort\">443</Data>"
+        : "</EventData></Event>"
+    }
+  },
+  "agent": {
+    "id": "agent-789",
+    "hostname": "DESKTOP-NET",
+    "ephemeral_id": "abc-987"
+  }
+}
